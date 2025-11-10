@@ -15,18 +15,18 @@ import {
 function HistoryRouter({ children }: PropsWithChildren) {
   const [routerState, setRouterState] = useState({
     pendingNav: () => {},
-    url: document.location.pathname,
+    pathname: document.location.pathname,
     search: parseSearchParams(document.location.search),
   });
 
-  function navigate(url: string) {
+  function navigate(pathname: string) {
     startTransition(() => {
       setRouterState(() => {
         return {
-          url,
+          pathname,
           search: {},
           pendingNav() {
-            window.history.pushState({}, "", url);
+            window.history.pushState({}, "", pathname);
           },
         };
       });
@@ -43,14 +43,14 @@ function HistoryRouter({ children }: PropsWithChildren) {
           delete newParams[key];
         }
         return {
-          url: prev.url,
+          pathname: prev.pathname,
           search: newParams,
           pendingNav() {
             const newUrlParams = new URLSearchParams(newParams).toString();
             window.history.pushState(
               {},
               "",
-              prev.url + (newUrlParams ? `?${newUrlParams}` : "")
+              prev.pathname + (newUrlParams ? `?${newUrlParams}` : "")
             );
           },
         };
@@ -77,7 +77,7 @@ function HistoryRouter({ children }: PropsWithChildren) {
       // example why just clearing the cache when a component unmounts is a bad idea.
       startTransition(() => {
         setRouterState({
-          url: document.location.pathname,
+          pathname: document.location.pathname,
           search: parseSearchParams(document.location.search),
           pendingNav() {
             // Noop. URL has already updated.
@@ -100,7 +100,7 @@ function HistoryRouter({ children }: PropsWithChildren) {
   return (
     <RouterContext
       value={{
-        url: routerState.url,
+        pathname: routerState.pathname,
         search: routerState.search,
         navigate,
         setParams,
@@ -115,7 +115,7 @@ function HistoryRouter({ children }: PropsWithChildren) {
 export const Router = HistoryRouter;
 
 interface RouterContextValue {
-  url: string;
+  pathname: string;
   search: Record<string, string>;
   navigate: (url: string) => void;
   setParams: (key: string, value: string) => void;

@@ -22,7 +22,7 @@ globalStyle("html", {
   overflow: "hidden",
 });
 
-globalStyle("body", {
+globalStyle("body, #root", {
   height: "100%",
   margin: 0,
   fontFamily:
